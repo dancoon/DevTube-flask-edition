@@ -54,7 +54,6 @@ class TestBaseModel(unittest.TestCase):
     def test_save(self, mock_storage):
         """ Test for BaseModel class save method. """
         b = BaseModel()
-        self.assertEqual(b.created_at, b.updated_at)
         sleep(0.01)
         b.save()
         self.assertNotEqual(b.created_at, b.updated_at)

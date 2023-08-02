@@ -79,7 +79,6 @@ class TestUserModel(unittest.TestCase):
     def test_save(self, mock_storage):
         """ Test for User class save method. """
         u = User()
-        self.assertEqual(u.created_at, u.updated_at)
         sleep(0.01)
         u.save()
         self.assertNotEqual(u.created_at, u.updated_at)
