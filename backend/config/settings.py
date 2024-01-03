@@ -10,10 +10,9 @@ class Config:
     GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
     GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
     MONGODB_SETTINGS = {
-        'db': 'devtube',
-        'host': 'localhost',
-        'port': 27017,
-        'username': 'devtube',
-        'password': 'devtube_pwd'
+        "db": "devtube",
+        "host": "localhost",
+        "port": 27017,
+        "username": "devtube",
+        "password": "devtube_pwd",
     }
-    

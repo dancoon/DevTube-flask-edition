@@ -1,5 +1,6 @@
 """ Authentication service"""
 import uuid
+
 from flask import session, url_for
 
 
@@ -20,4 +21,3 @@ class AuthService:
         self.store_nonce_in_session(nonce)
         redirect_uri = url_for("auth.auth_route", _external=True)
         return oauth.google.authorize_redirect(redirect_uri, nonce=nonce)
-

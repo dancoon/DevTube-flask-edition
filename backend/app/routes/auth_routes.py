@@ -1,12 +1,16 @@
-from authlib.integrations.flask_client import OAuth
-from flask import Blueprint, jsonify, redirect, session, url_for, request
 import uuid
+
 from authlib.integrations.base_client.errors import OAuthError
+from authlib.integrations.flask_client import OAuth
+from flask import Blueprint, jsonify, redirect, request, session, url_for
+
+from app.services.auth_service import AuthService
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
 
 CONF_URL = "https://accounts.google.com/.well-known/openid-configuration"
 oauth = OAuth()
+google_auth = AuthService()
 
 
 def configure_oauth(app):
@@ -22,16 +26,6 @@ def configure_oauth(app):
     )
 
 
-def generate_nonce():
-    """Generate a string for use as a nonce"""
-    return str(uuid.uuid4())
-
-
-def store_nonce_in_session(nonce):
-    """Store a nonce in the session"""
-    session["nonce"] = nonce
-
-
 @auth.route("/")
 def index():
     return (
@@ -43,8 +37,8 @@ def index():
 
 @auth.route("/login")
 def login():
-    nonce = generate_nonce()
-    store_nonce_in_session(nonce)
+    nonce = google_auth.generate_nonce()
+    google_auth.store_nonce_in_session(nonce)
     redirect_uri = url_for("auth.auth_route", _external=True)
     return oauth.google.authorize_redirect(redirect_uri, nonce=nonce)
 
