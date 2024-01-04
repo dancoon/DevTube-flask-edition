@@ -18,7 +18,8 @@ class User(BaseModel):
             "email": email,
             "password": hashed_password.decode("utf-8"),
         }
-        res = self.collection.insert_one(user_data)
+        user = User(**user_data).to_dict()
+        res = self.collection.insert_one(user)
         user_data["_id"] = str(res.inserted_id)
         return User(**user_data).to_dict()
 
@@ -34,7 +35,6 @@ class User(BaseModel):
     def get_user_by_id(self, id):
         """Get a user by id"""
         data = self.collection.find_one({"_id": ObjectId(id)})
-        print(User(**data).to_dict())
         return User(**data).to_dict() if data else {}
 
     def get_all_users(self):

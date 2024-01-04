@@ -21,12 +21,14 @@ class BaseModel:
                 self._id = str(kwargs["_id"])
             if kwargs.get("created_at", None) and type(self.created_at) is str:
                 self.created_at = datetime.strptime(kwargs["created_at"], time)
-            else:
-                self.created_at = datetime.utcnow()
             if kwargs.get("updated_at", None) and type(self.updated_at) is str:
                 self.updated_at = datetime.strptime(kwargs["updated_at"], time)
-            else:
-                self.updated_at = datetime.utcnow()
+
+            if kwargs.get("created_at", None) is None:
+                self.created_at = datetime.utcnow()
+            if kwargs.get("updated_at", None) is None:
+                self.updated_at = datetime.utcnow()    
+            
         else:
             self._id = None
             self.created_at = datetime.utcnow()
