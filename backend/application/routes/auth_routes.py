@@ -1,10 +1,9 @@
 import uuid
 
+from application.services.auth_service import AuthService
 from authlib.integrations.base_client.errors import OAuthError
 from authlib.integrations.flask_client import OAuth
 from flask import Blueprint, jsonify, redirect, request, session, url_for
-
-from application.services.auth_service import AuthService
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
 

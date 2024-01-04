@@ -1,14 +1,17 @@
+from datetime import datetime
+
 from flask import current_app
 from pymongo import MongoClient
-from datetime import datetime
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
 EXCLUDED_ATTRS = ["client", "db", "collection", "__class__"]
 
+
 class BaseModel:
     def __init__(self, *args, **kwargs):
-        self.client = MongoClient("mongodb+srv://dancoon:XI3wurObRcLT8hMb@cluster0.woaed1v.mongodb.net/?retryWrites=true&w=majority"
-)
+        self.client = MongoClient(
+            "mongodb+srv://dancoon:XI3wurObRcLT8hMb@cluster0.woaed1v.mongodb.net/?retryWrites=true&w=majority"
+        )
         self.db = self.client.devtube
         if kwargs:
             for key, value in kwargs.items():
@@ -28,7 +31,7 @@ class BaseModel:
             self._id = None
             self.created_at = datetime.utcnow()
             self.updated_at = self.created_at
-            
+
     def to_dict(self):
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
@@ -37,13 +40,12 @@ class BaseModel:
         if "updated_at" in new_dict:
             new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
         new_dict["__class__"] = self.__class__.__name__
-        
+
         if "_id" in new_dict:
             new_dict["id"] = new_dict.pop("_id")
 
         for attr in EXCLUDED_ATTRS:
             if attr in new_dict:
                 del new_dict[attr]
-            
-        return new_dict
 
+        return new_dict
