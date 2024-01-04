@@ -19,7 +19,7 @@ class User(BaseModel):
         }
         res = self.collection.insert_one(user_data)
         user_data['_id'] = str(res.inserted_id)
-        return User(user_data).to_dict()
+        return User(**user_data).to_dict()
     
     def check_password(self, password):
         """Check if password matches"""

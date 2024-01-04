@@ -44,8 +44,6 @@ class BaseModel:
         for attr in EXCLUDED_ATTRS:
             if attr in new_dict:
                 del new_dict[attr]
-        
-        new_dict = {"id": new_dict.pop("id", None), **new_dict}
-    
+            
         return new_dict
 
