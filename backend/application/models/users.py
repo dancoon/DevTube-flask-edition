@@ -1,26 +1,25 @@
+from bson import ObjectId
 from application.models.base import BaseModel
 import bcrypt
 
 class User(BaseModel):
-    """User model for storing user related details"""
+    """User model for storing user-related details"""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.collection = self.db['users']
-        self.name = None
-        self.email = None
-        self.password = None
+        
     
     def create_user(self, name="", email=None, password=None):
         """Create a new user"""
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        user = self({
+        user_data = {
             'name': name,
             'email': email,
             'password': hashed_password.decode('utf-8')
-        })
-        res = self.collection.insert_one(user.to_dict())
-        user['_id'] = str(res.inserted_id)
-        return user
+        }
+        res = self.collection.insert_one(user_data)
+        user_data['_id'] = str(res.inserted_id)
+        return User(user_data).to_dict()
     
     def check_password(self, password):
         """Check if password matches"""
@@ -28,16 +27,19 @@ class User(BaseModel):
     
     def get_user_by_email(self, email):
         """Get a user by email"""
-        return self.collection.find_one({'email': email})  # Use to_dict here
+        data = self.collection.find_one({'email': email})
+        return User(data).to_dict() if data else None
     
     def get_user_by_id(self, id):
         """Get a user by id"""
-        return self.collection.find_one({'_id': id})  # Use to_dict here
+        data = self.collection.find_one({'_id': ObjectId(id)})
+        print(User(**data).to_dict())
+        return User(**data).to_dict() if data else {}
 
     def get_all_users(self):
         """Get all users"""
         users_cursor = self.collection.find()
-        return list(users_cursor)  # Use to_dict here
+        return [User(**user).to_dict() for user in users_cursor]
     
     def update_user(self, id, data):
         """Update a user"""
