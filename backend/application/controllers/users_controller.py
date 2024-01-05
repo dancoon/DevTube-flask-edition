@@ -26,7 +26,6 @@ class UserController:
     def users(self):
         """Get all users."""
         users = get_all_users()
-        print(users)
         return jsonify(users), 200
 
     def create_user(self, data):

@@ -9,12 +9,12 @@ class User(BaseModel):
     """User model for storing user-related details"""
 
     collection = "users"
+    name = ""
+    email = ""
+    password = ""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.name = None
-        # self.email = None
-        # self.password = None
 
     def check_password(self, password):
         """Check if password matches"""
@@ -29,10 +29,7 @@ class User(BaseModel):
     def get_all_users(self):
         """Get all users"""
         queryset = storage.get_all(self.collection)
-        print(queryset)
-        users = []
-        for user in queryset:
-            users.append(User(**user).to_dict())
+        users = [User(**user).to_dict() for user in queryset]
         return users
 
     def to_dict(self):

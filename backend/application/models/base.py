@@ -4,15 +4,13 @@ from flask import current_app
 from pymongo import MongoClient
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
-EXCLUDED_ATTRS = ["__class__"]
 
 
 class BaseModel:
     def __init__(self, *args, **kwargs):
         if kwargs:
             for key, value in kwargs.items():
-                if key not in EXCLUDED_ATTRS:
-                    setattr(self, key, value)
+                setattr(self, key, value)
             if kwargs.get("_id", None):
                 self._id = str(kwargs["_id"])
             if kwargs.get("created_at", None) and type(self.created_at) is str:
@@ -46,3 +44,6 @@ class BaseModel:
             storage.update_obj(self.collection, self._id, self.to_dict())
         else:
             storage.create_obj(self.collection, self.to_dict())
+
+    def __str__(self) -> str:
+        return str(self.to_dict())
