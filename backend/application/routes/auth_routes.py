@@ -1,9 +1,11 @@
 import uuid
 
-from application.services.auth_service import AuthService
 from authlib.integrations.base_client.errors import OAuthError
 from authlib.integrations.flask_client import OAuth
 from flask import Blueprint, jsonify, redirect, request, session, url_for
+from flask_jwt_extended import create_access_token
+
+from application.services.auth_service import AuthService
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -34,8 +36,9 @@ def index():
     )
 
 
-@auth.route("/login")
+@auth.route("/google/login")
 def login():
+    """Redirect the user to the Google OAuth Provider."""
     nonce = google_auth.generate_nonce()
     google_auth.store_nonce_in_session(nonce)
     redirect_uri = url_for("auth.auth_route", _external=True)
@@ -44,6 +47,7 @@ def login():
 
 @auth.route("/authenticate")
 def auth_route():
+    """Authenticate the user with Google OAuth."""
     try:
         nonce = request.args.get("nonce")
         token = oauth.google.authorize_access_token()
@@ -59,5 +63,28 @@ def auth_route():
 
 @auth.route("/logout")
 def logout():
+    """Log the user out of the application."""
     session.pop("user", None)
     return redirect(url_for("auth.index"))
+
+
+@auth.route("/jwt/login", methods=["POST"])
+def jwt_login():
+    """Log the user in using a JWT."""
+    from application.models.users import User
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+    if not email or not password:
+        return jsonify({"message": "Missing email or password"})
+    try:
+        user = User().get_user_by_email(email)
+        if not user:
+            return jsonify({"message": "User does not exist"})
+        if not user.check_password(password):
+            return jsonify({"message": "Incorrect password"})
+        access_token = create_access_token(identity=email)
+        return jsonify(access_token=access_token)
+    except Exception as e:
+        print(e)
+        return jsonify({"message": f"Error {e}"})
