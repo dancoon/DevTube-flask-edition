@@ -1,5 +1,6 @@
-from application.controllers.users_controller import UserController
 from flask import Blueprint, jsonify, request
+
+from application.controllers.users_controller import UserController
 
 user = Blueprint("user", __name__, url_prefix="/users")
 
@@ -32,7 +33,7 @@ def update_user(user_id):
     return controller.update_user(user_id, data)
 
 
-@user.route("/<user_id>", methods=["DELETE"])
-def delete_user(user_id):
-    """Delete a user."""
-    return controller.delete_user(user_id)
+# @user.route("/<user_id>", methods=["DELETE"])
+# def delete_user(user_id):
+#     """Delete a user."""
+#     return controller.delete_user(user_id)
