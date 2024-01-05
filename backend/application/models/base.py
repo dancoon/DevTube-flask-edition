@@ -7,6 +7,7 @@ time = "%Y-%m-%dT%H:%M:%S.%f"
 
 
 class BaseModel:
+    _id = ""
     def __init__(self, *args, **kwargs):
         if kwargs:
             for key, value in kwargs.items():
@@ -23,7 +24,6 @@ class BaseModel:
             if kwargs.get("updated_at", None) is None:
                 self.updated_at = datetime.utcnow()
         else:
-            self._id = None
             self.created_at = datetime.utcnow()
             self.updated_at = self.created_at
 

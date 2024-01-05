@@ -1,3 +1,4 @@
+from bson import ObjectId
 from pymongo import MongoClient
 
 
@@ -16,8 +17,8 @@ class MongoEngine:
 
     def get_obj_by_attr(self, collection, query):
         """Get a single document from a collection"""
-        print(self.db[collection].find_one(query))
-        return self.db[collection].find_one(query)
+        print(self.db[collection].find_one({"_id": ObjectId("6597e97eba06d7ea78c20348")}))
+        return self.db[collection].find_one({"_id": ObjectId(query["_id"])})
 
     def create_obj(self, collection, data):
         """Create a new document in a collection"""

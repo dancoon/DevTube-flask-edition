@@ -34,3 +34,8 @@ def get_all_users():
     """Get all users"""
     users = storage.get_all("users")
     return [User(**user).to_dict() for user in users]
+
+def update_user(user_id, data):
+    """Update a user"""
+    user = storage.update_obj("users", user_id, data)
+    return User(**user)

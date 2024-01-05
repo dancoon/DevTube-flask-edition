@@ -5,6 +5,7 @@ from application.services.users_services import (
     get_all_users,
     get_user_by_email,
     get_user_by_id,
+    update_user,
 )
 
 
@@ -39,13 +40,13 @@ class UserController:
         )
         return jsonify(user.to_dict()), 201
 
-    # def update_user(self, user_id, data):
-    #     """Update a user."""
-    #     user = self.object.get_user_by_id(user_id)
-    #     if not user:
-    #         return {"message": "User not found."}, 404
-    #     user = self.object.update_user(user_id, data)
-    #     return jsonify(user), 200
+    def update_user(self, user_id, data):
+        """Update a user."""
+        user = get_user_by_id(user_id)
+        if not user:
+            return {"message": "User not found."}, 404
+        user = update_user(user_id, data)
+        return jsonify(user.to_dict()), 200
 
     # def delete_user(self, user_id):
     #     """Delete a user."""
