@@ -15,10 +15,19 @@ class MongoEngine:
         """Get all documents from a collection"""
         return self.db[collection].find()
 
+    def get_obj_by_id(self, collection, user_id):
+        """Get a single document from a collection"""
+        try:
+            query = {"_id": ObjectId(user_id)}
+        except Exception as e:
+            raise ValueError(f"Error converting '_id' to ObjectId: {e}")
+        return self.db[collection].find_one(query)
+
     def get_obj_by_attr(self, collection, query):
         """Get a single document from a collection"""
-        print(self.db[collection].find_one({"_id": ObjectId("6597e97eba06d7ea78c20348")}))
-        return self.db[collection].find_one({"_id": ObjectId(query["_id"])})
+        if not isinstance(query, dict):
+            raise ValueError("Query must be a dictionary type")
+        return self.db[collection].find_one(query)
 
     def create_obj(self, collection, data):
         """Create a new document in a collection"""
@@ -26,8 +35,8 @@ class MongoEngine:
 
     def update_obj(self, collection, id, data):
         """Update a document in a collection"""
-        return self.db[collection].update_one({"_id": id}, {"$set": data})
+        return self.db[collection].update_one({"_id": ObjectId(id)}, {"$set": data})
 
     def delete_obj(self, collection, id):
         """Delete a document from a collection"""
-        return self.db[collection].delete_one({"_id": id})
+        return self.db[collection].delete_one({"_id": ObjectId(id)})

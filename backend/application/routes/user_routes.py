@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from application.controllers.users_controller import UserController
+from application.services.users_services import get_user_by_email
 
 user = Blueprint("user", __name__, url_prefix="/users")
 
