@@ -2,6 +2,7 @@ from flask import jsonify
 
 from application.services.users_services import (
     create_user,
+    delete_user,
     get_all_users,
     get_user_by_email,
     get_user_by_id,
@@ -19,7 +20,7 @@ class UserController:
 
     def user_details(self, user_id):
         """Get user details."""
-        user = get_user_by_email(user_id)
+        user = get_user_by_id(user_id)
         if not user:
             return {"message": "User not found."}, 404
         return jsonify(user.to_dict()), 200
@@ -45,13 +46,20 @@ class UserController:
         user = get_user_by_id(user_id)
         if not user:
             return {"message": "User not found."}, 404
-        user = update_user(user_id, data)
+        try:
+            user = update_user(user_id, data)
+        except Exception as e:
+            return {"message": f"Error {e}"}, 400
         return jsonify(user.to_dict()), 200
 
-    # def delete_user(self, user_id):
-    #     """Delete a user."""
-    #     user = self.object.get_user_by_id(user_id)
-    #     if not user:
-    #         return {"message": "User not found."}, 404
-    #     user = self.object.delete_user(user_id)
-    #     return {"message": "User deleted."}, 200
+    def delete_user(self, user_id):
+        """Delete a user."""
+        user = get_user_by_id(user_id)
+        if not user:
+            return {"message": "User not found."}, 404
+        try:
+            deleted = delete_user(user_id)
+        except Exception as e:
+            return {"message": f"Error {e}"}, 400
+        message = f"{user} deleted" if deleted else f"Error deleting {user}"
+        return jsonify({"message": message}), 200

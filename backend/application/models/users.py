@@ -18,13 +18,16 @@ class User(BaseModel):
 
     def check_password(self, password):
         """Check if password matches"""
-        pwd = self.password.encode("utf-8")
-        print(pwd)
-        return bcrypt.checkpw(password.encode("utf-8"), pwd)
+        try:
+            pwd = self.password.encode("utf-8")
+            return bcrypt.checkpw(password.encode("utf-8"), pwd)
+        except Exception as e:
+            raise Exception(f"Error checking password: {e}")
 
     def set_password(self, password):
         """Set the password for a user"""
-        self.password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+        password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+        self.password = password.decode("utf-8")
 
     def get_all_users(self):
         """Get all users"""
@@ -32,8 +35,5 @@ class User(BaseModel):
         users = [User(**user).to_dict() for user in queryset]
         return users
 
-    def to_dict(self):
-        new_dict = super().to_dict()
-        if "password" in new_dict:
-            del new_dict["password"]
-        return new_dict
+    def __str__(self) -> str:
+        return f"User: {self.name} - {self.email}"

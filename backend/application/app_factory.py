@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_jwt_extended import JWTManager
 
 
 def create_app():
@@ -8,6 +9,8 @@ def create_app():
     app.config.from_object(settings.Config)
     app.secret_key = app.config.get("SECRET_KEY")
     app.url_map.strict_slashes = False
+
+    jwt = JWTManager(app)
 
     from application.routes.auth_routes import configure_oauth
 

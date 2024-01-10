@@ -3,9 +3,10 @@ import uuid
 from authlib.integrations.base_client.errors import OAuthError
 from authlib.integrations.flask_client import OAuth
 from flask import Blueprint, jsonify, redirect, request, session, url_for
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 from application.services.auth_service import AuthService
+from application.services.users_services import get_user_by_email
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -68,7 +69,7 @@ def logout():
     return redirect(url_for("auth.index"))
 
 
-@auth.route("/jwt/login", methods=["POST"])
+@auth.route("/jwt/create", methods=["POST"])
 def jwt_login():
     """Log the user in using a JWT."""
     from application.models.users import User
@@ -78,7 +79,7 @@ def jwt_login():
     if not email or not password:
         return jsonify({"message": "Missing email or password"})
     try:
-        user = User().get_user_by_email(email)
+        user = get_user_by_email(email)
         if not user:
             return jsonify({"message": "User does not exist"})
         if not user.check_password(password):
@@ -86,5 +87,13 @@ def jwt_login():
         access_token = create_access_token(identity=email)
         return jsonify(access_token=access_token)
     except Exception as e:
-        print(e)
         return jsonify({"message": f"Error {e}"})
+
+
+@auth.route("/jwt/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def jwt_refresh():
+    """Refresh the JWT token."""
+    email = get_jwt_identity()
+    access_token = create_access_token(identity=email)
+    return jsonify(access_token=access_token), 200

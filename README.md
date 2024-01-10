@@ -6,4 +6,4 @@ It holds the key to an improved educational experience in a world where knowledg
 
 
 ### Author
-Ian Dancun - [github](https://github.com/dancoon/) / [linkedIn](https://www.linkedin.com/in/dancoon/)\
+Ian Dancun - [github](https://github.com/dancoon/) / [linkedIn](https://www.linkedin.com/in/dancoon/)

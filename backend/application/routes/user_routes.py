@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from application.controllers.users_controller import UserController
+from application.services.users_services import get_user_by_email
 
 user = Blueprint("user", __name__, url_prefix="/users")
 
@@ -33,7 +35,7 @@ def update_user(user_id):
     return controller.update_user(user_id, data)
 
 
-# @user.route("/<user_id>", methods=["DELETE"])
-# def delete_user(user_id):
-#     """Delete a user."""
-#     return controller.delete_user(user_id)
+@user.route("/<user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    """Delete a user."""
+    return controller.delete_user(user_id)

@@ -8,6 +8,7 @@ time = "%Y-%m-%dT%H:%M:%S.%f"
 
 class BaseModel:
     _id = ""
+
     def __init__(self, *args, **kwargs):
         if kwargs:
             for key, value in kwargs.items():
@@ -40,6 +41,7 @@ class BaseModel:
         """save the instance into the database"""
         from application.models import storage
 
+        print(self.to_dict())
         if self._id:
             storage.update_obj(self.collection, self._id, self.to_dict())
         else:
