@@ -8,7 +8,6 @@ def create_user(name, email, password):
     user.name = name
     user.email = email
     user.set_password(password)
-    print(user.to_dict())
     user.save()
     return user
 

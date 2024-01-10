@@ -20,11 +20,9 @@ class User(BaseModel):
         """Check if password matches"""
         try:
             pwd = self.password.encode("utf-8")
-            print(pwd)
             return bcrypt.checkpw(password.encode("utf-8"), pwd)
         except Exception as e:
-            print(e)
-            return False
+            raise Exception(f"Error checking password: {e}")
 
     def set_password(self, password):
         """Set the password for a user"""
@@ -36,3 +34,6 @@ class User(BaseModel):
         queryset = storage.get_all(self.collection)
         users = [User(**user).to_dict() for user in queryset]
         return users
+
+    def __str__(self) -> str:
+        return f"User: {self.name} - {self.email}"
