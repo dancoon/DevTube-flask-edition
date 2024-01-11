@@ -16,9 +16,10 @@ def create_app():
 
     configure_oauth(app)
 
-    from application.routes import auth_routes, user_routes
+    from application.routes import auth_routes, devtube_routes, user_routes
 
     app.register_blueprint(auth_routes.auth)
     app.register_blueprint(user_routes.user)
+    app.register_blueprint(devtube_routes.devtube)
 
     return app
